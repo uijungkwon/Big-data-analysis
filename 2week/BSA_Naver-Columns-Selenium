@@ -1,0 +1,90 @@
+/*Naver 뉴스에서 칼럼 가져오기*/
+네이버 뉴스 > 오피니언 > 칼럼
+
+import selenium
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.chrome.service import Service
+from webdriver_manager.chrome import ChromeDriverManager
+
+웹드라이버 = webdriver.Chrome(service = Service(ChromeDriverManager().install()))
+
+인터넷주소 = 'https://news.naver.com/opinion/column'
+웹드라이버.get(url =인터넷주소)
+웹드라이버.implicitly_wait(3)
+
+웹드라이버.find_element(By.CSS_SELECTOR, "button._prev_day_btn").click()
+웹드라이버.implicitly_wait(2)
+
+웹드라이버.find_element(By.CSS_SELECTOR, "button._next_day_btn").click()
+웹드라이버.implicitly_wait(2)
+
+칼럼제목 = 웹드라이버.find_elements(By.CSS_SELECTOR, "strong.title")
+칼럼주소 = 웹드라이버.find_elements(By.CSS_SELECTOR, "li.opinion_column_item > a")
+print(len(칼럼제목), len(칼럼주소))
+
+print(칼럼주소[0].get_attribute('href'))
+
+칼럼사전 = {}
+사이트수 = len(칼럼주소)
+for 번호 in range(사이트수):
+  제목 = 칼럼제목[번호].text
+  주소 = 칼럼주소[번호].get_attribute('href')
+  print("제목:", 제목)
+  print("주소:", 주소)
+  칼럼사전[주소] = 제목
+칼럼사전
+
+컬럼드라이버 = webdriver.Chrome(service = Service(ChromeDriverManager().install()))
+컬럼드라이버.get(url=주소)
+컬럼드라이버.implicitly_wait(2)
+
+본문 = 컬럼드라이버.find_element(By.CSS_SELECTOR, '#dic_area').text
+print(본문)
+
+통합칼럼 = ""
+for 사이트, 제목 in 칼럼사전, items():
+  통합칼럼 += "*"*10 + 제목 + "*"*10+"\n"
+  통합칼럼 += "URL: "+사이트+"\n"
+  컬럼드라이버.get(url = 사이트)
+  컬럼드라이버.implicitly_wait(2)
+  컬럼드라이버.find_element(By.CSS_SELECTOR, '#dic_area').text
+  통합칼럼 += str(본문)+"\n"
+  
+print(통합칼럼)
+
+##통합칼럼은 이미 문자열
+통합칼럼 = 통합칼럼.replace("<br/>", "\n")
+통합칼럼 = 통합칼럼.replace("</strong>", "\n")
+통합칼럼 = 통합칼럼.replace("</span>", "\n")
+통합칼럼 = 통합칼럼.replace("</em>", "\n")
+통합칼럼 = 통합칼럼.replace("</table>", "\n")
+통합칼럼 = 통합칼럼.replace("</b>", "\n")
+통합칼럼 = 통합칼럼.replace("function_flash_removeCallback() {}", "\n")
+print(통합칼럼)
+
+칼럼리스트 = 통합칼럼.split("\n")
+칼럼리스트 
+
+제거문자 = ["[", "<", "/", "-", "◎", "&","▶","©","<"]
+
+칼럼묶음 = ""
+for 문자열 in 칼럼리스트:
+  문자열 = 문자열.lstrip()
+  if 문자열 == "" : continue
+  if 문자열[0] not in 제거문자: 칼럼묶음 += 문자열 + "\n"
+ 
+print(칼럼묶음)
+
+저장파일 = open("Naver-Columns.txt","a", encoding ="utf-8")
+저장파일.write(칼럼묶음+'\n')
+저장파일.
+
+
+
+
+
+
+
+
+
