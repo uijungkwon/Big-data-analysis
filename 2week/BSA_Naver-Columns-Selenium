@@ -78,7 +78,7 @@ print(칼럼묶음)
 
 저장파일 = open("Naver-Columns.txt","a", encoding ="utf-8")
 저장파일.write(칼럼묶음+'\n')
-저장파일.
+저장파일.close()
 
 
 
