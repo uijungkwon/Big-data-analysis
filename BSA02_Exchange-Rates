@@ -24,3 +24,40 @@ response = requests.get(url)
 for 상품 in 관심상품:
   가격 += [1.0/float(원화[상품])]
 print(가격)
+
+/*함수 작성 - 입력된 url에서 자료를 읽고 해당 상품에 연계된 관심상품의 가격 출력 */
+import time
+def 가격산출(url, 관심상품):
+  response = requests.get(url)
+  환전자료 = json.loads(response.text)['data']['rates']
+  가격 = [str(time.asctime())]
+  for 상품 in 관심상품:
+    가격 += [1.0/float(환전자료[상품])]
+   return 가격
+결과 = 가격산출(url, 관심상품)
+print(결과)
+
+/*지정된 시간에 작업을 수행*/
+from apscheduler.schedulers.background import BackgroundScheduler
+sched = BackgroundScheduler
+def 가격산출():
+  url = "https://api.coinbase.com/v2/exchange-rates?currency=KRW"
+  관심상품 = ['USD', 'EUR', 'JPY', 'CNY', 'BTC', 'ETH', 'DOGE']
+  저장파일 = open("원화-환율.csv", "a", encoding = "utf-8")
+  response = requests.get(url)
+  환전자료 = json.loads(response.text)['data']['rates']
+  가격 = str(time.asctime())
+  for 상품 in 관심상품:
+    가격 += "," + str(1.0/float(환전자료[상품]))
+  print(가격)
+  저장파일.write(가격+'\n')
+  저장파일.close()
+sched.start()
+sched.add_job(가격산출, 'interval', seconds = 60)
+sched.shutdown(가격산출)
+
+
+
+
+
+
