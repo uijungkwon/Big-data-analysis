@@ -1,0 +1,43 @@
+import requests
+from bs4 import BeautifulSoup
+import re
+
+##삼성전자
+req = requests.get('https://finance.naver.com/item/main.naver?code=005930')
+html = req.text
+soup = BeautifulSoup(html, 'html.parser')
+
+시간 = str(soup.select_one("em.date"))
+시간 = re.sub('<.+?>','',시간,0).strip()
+print(시간)
+
+temp = soup.select("div.rate_info")
+print(str(temp))
+temp = soup.select("div.rate_info span.blind")
+print(str(temp))
+
+print("현재가:", temp[0].string)
+print("전일:", temp[3].string)
+print("고가:", temp[4].string)
+print("거래량:", temp[6].string)
+print("시가:", temp[7].string)
+print("저가:", temp[8].string)
+print("거래대금:", temp[9].string)
+
+현재가 = temp[0].string
+전일 = temp[3].string
+고가 = temp[4].string
+거래량 = temp[6].string
+시가 = temp[7].string
+저가 = temp[8].string
+거래대금 = temp[9].string
+
+데이터 = 시간+"/"+현재가+"/"+전일+"/"+시가+"/"+고가+"/"+저가+"/"+거래량+"/"+거래
+데이터 = 데이터.replace(",","")
+데이터 = 데이터.replace("/",", ")
+print(데이터)
+
+
+
+
+
