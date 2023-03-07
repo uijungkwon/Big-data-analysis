@@ -1,0 +1,102 @@
+import requests
+from bs4 import BeautifulSoup
+
+def KOSPI():
+  요청 = requests.get('https://finance.naver.com/sise/sise_index.nhn?code=KOSPI')
+  html = 요청.text
+  soup = BeautifulSoup(html, 'html.parser')
+  # 날짜 크롤링 후 태그 제거하기
+  출력값 = soup.select_one("div.ly_realtime > span").string
+  #현재가
+  현재가 = soup.select_one("div.subtop_sise_detail > div > em").string
+  #최고가
+  임시 = soup.select_one("div.subtop_sise_detail > table >tr")[1]
+  최고가 = 임시.select_one("td.td").string
+  
+  #최저가
+  최저가 = 임시.select_one("td.td2").string
+  #거래량
+  임시 = soup.select("div.subtop_sise_detail > table >tr")[0]
+  거래량 = 임시.select_one("td.td").string
+  #거래대금
+  임시 = soup.select("div.subtop_sise_detail > table >tr")[0]
+  거래대금 = 임시.select_one("td.td2").string
+  #상한/상승/보합/하락/하한 개수
+  임시 = soup.select("div.subtop_sise_detail > table >tr")[3]
+  상한수 = 임시.select_one("td.td3 > ul > li.lst > a > span").string
+  상승수 = 임시.select_one("td.td3 > ul > li.lst2 > a > span").string
+  보합수 = 임시.select_one("td.td3 > ul > li.lst3 > a > span").string
+  하락수 = 임시.select_one("td.td3 > ul > li.lst4 > a > span").string
+  하한수 = 임시.select_one("td.td3 > ul > li.lst5 > a > span").string
+  
+  출력값 += "/"+현재가+"/"+최고가+"/"+최저가+"/"+거래량+"/"+거래대금+"/"+상한수+"/"+상승수+"/"+보합수+"/"+하락수+"/"+하한수
+  출력값 = 출력값.replace(",","")
+  출력값 = 출력값.replace("/", ", ")
+  
+  return 출력값
+데이터 = KOSPI()
+print(데이터)
+
+def 종합주가지수():
+  종합지수 = ["KOSPI", "KOSDAQ", "KOSPI200"]
+  for 지수 in 종합지수:
+    요청 = requests.get('https://finance.naver.com/sise/sise_index.nhn?code=')
+    html = 요청.text
+    soup = BeautifulSoup(html, 'html.parser')
+    
+    # 날짜 크롤링 후 태그 제거하기
+    출력값 = soup.select_one("div.ly_realtime > span").string
+    #현재가
+    현재가 = soup.select_one("div.subtop_sise_detail > div > em").string
+    #최고가
+    임시 = soup.select_one("div.subtop_sise_detail > table >tr")[1]
+    최고가 = 임시.select_one("td.td").string
+    
+    #최저가
+    최저가 = 임시.select_one("td.td2").string
+    #거래량
+    임시 = soup.select("div.subtop_sise_detail > table >tr")[0]
+    거래량 = 임시.select_one("td.td").string
+    #거래대금
+    임시 = soup.select("div.subtop_sise_detail > table >tr")[0]
+    거래대금 = 임시.select_one("td.td2").string
+    #상한/상승/보합/하락/하한 개수
+    임시 = soup.select("div.subtop_sise_detail > table >tr")[3]
+    상한수 = 임시.select_one("td.td3 > ul > li.lst > a > span").string
+    상승수 = 임시.select_one("td.td3 > ul > li.lst2 > a > span").string
+    보합수 = 임시.select_one("td.td3 > ul > li.lst3 > a > span").string
+    하락수 = 임시.select_one("td.td3 > ul > li.lst4 > a > span").string
+    하한수 = 임시.select_one("td.td3 > ul > li.lst5 > a > span").string
+    
+    출력값 += "/"+현재가+"/"+최고가+"/"+최저가+"/"+거래량+"/"+거래대금+"/"+상한수+"/"+상승수+"/"+보합수+"/"+하락수+"/"+하한수
+    출력값 = 출력값.replace(",","")
+    출력값 = 출력값.replace("/", ", ")
+    
+    print(지수, ":", 출력값)
+    저장파일 = open(지수+".csv", "a", encoding="utf-8")
+    저장파일.write(출력값+'\n')
+    저장파일.close()
+    
+    time.sleep(0.5)
+    
+    종합주가지수()
+    
+    from apscheduler.schedulers.background import BackgroundScheduler
+    sched = BackgroundScheduler()
+    sched.start()
+    
+    sched.add_job(종합주가지수, 'cron', day_of_week='mon-fri', hour='9-16', minute='0-59', second='30')
+    
+    sched.shutdown(종합주가지수)
+    
+    import pandas as pd
+    pd.read_csv("KOSPI200.csv", header=None)
+
+
+
+
+
+
+
+
+  
