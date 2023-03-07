@@ -1,0 +1,31 @@
+/*Naver금융에서 시장지표 자료 가져오기*/
+from urllib.request import urlopen #파이썬 기본 패키지
+from bs4 import BeautifulSoup
+
+인터넷주소 = 'https://finance.naver.com/marketindex/'
+오픈주소 = urlopen(인터넷주소)
+오픈주소 = urlopen(인터넷주소).read().decode("euc-kr") ##한글이 깨지는 경우
+
+/*파싱: 파싱트리 생성*/
+금액목록 = 수프.select("span.value")
+for 금액 in 금액목록:
+  print(금액.string)
+  
+시장목록 = 수프.select("span.blind")
+for 시장 in 시장목록:
+  print(시장.string)
+  
+시장목록 = 수프.select("h3 > span.blind")
+for 시장 in 시장목록:
+  print(시장.string)
+
+print(시장목록[0].string, ":", 금액목록[0].string)
+
+시장수 = len(시장목록)
+for i in range(시장수):
+  print(시장목록[i].string, ":", 금액목록[i].string)
+  
+현재시장 = {}
+for i in range(시장수):
+  현재시장[시장목록[i].string] = 금액목록[i].string
+현재시장
