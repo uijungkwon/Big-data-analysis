@@ -1,0 +1,21 @@
+/*폴더 및 파일 관련 함수*/
+경로 = "D:\Bigdata\Kowiki"
+파일리스트 = os.listdir(경로)
+파일리스트
+
+공통이름 = "kowiki-latest-pages-articles-"
+확장자 =".txt"
+공통길이 = len(공통이름)
+최대길이 = len(공통이름)+3+len(확장자)
+print(공통길이, 최대길이)
+
+os.chdir(경로)
+for 파일 in 파일리스트:
+  if 공통이름 in 파일 and 확장자 in 파일:
+    추가길이 = 최대길이-len(파일)
+    if 추가길이 > 0:
+      추가이름 = ""
+      for i in range(추가길이):
+        추가이름+="0"
+      새이름 = 공통이름 + 추가이름 + 파일[공통길이:]
+      print(새이름)
